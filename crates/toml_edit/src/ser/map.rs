@@ -598,7 +598,7 @@ impl serde::ser::SerializeStructVariant for SerializeStructVariant {
     #[inline]
     fn end(self) -> Result<Self::Ok, Self::Error> {
         let inner = serde::ser::SerializeStruct::end(self.inner)?.into();
-        let mut items = crate::table::KeyValuePairs::new();
+        let mut items = crate::table::KeyValuePairs::default();
         let value = crate::Item::Value(inner);
         items.insert(crate::Key::new(self.variant), value);
         Ok(crate::Value::InlineTable(crate::InlineTable::with_pairs(

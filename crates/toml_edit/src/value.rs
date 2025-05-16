@@ -1,6 +1,8 @@
-use std::iter::FromIterator;
-use std::str::FromStr;
+use core::iter::FromIterator;
+use core::str::FromStr;
 
+use alloc::borrow::ToOwned;
+use alloc::string::String;
 use toml_datetime::{Date, Datetime, Time};
 
 use crate::key::Key;
@@ -210,7 +212,7 @@ impl Value {
     /// The location within the original document
     ///
     /// This generally requires an [`ImDocument`][crate::ImDocument].
-    pub fn span(&self) -> Option<std::ops::Range<usize>> {
+    pub fn span(&self) -> Option<core::ops::Range<usize>> {
         match self {
             Value::String(f) => f.span(),
             Value::Integer(f) => f.span(),
@@ -357,8 +359,8 @@ impl<K: Into<Key>, V: Into<Value>> FromIterator<(K, V)> for Value {
 }
 
 #[cfg(feature = "display")]
-impl std::fmt::Display for Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Value {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         crate::encode::encode_value(self, f, None, ("", ""))
     }
 }
@@ -375,6 +377,7 @@ pub(crate) const DEFAULT_LEADING_VALUE_DECOR: (&str, &str) = ("", "");
 #[cfg(feature = "display")]
 mod tests {
     use super::*;
+    use alloc::string::ToString;
 
     #[test]
     fn from_iter_formatting() {

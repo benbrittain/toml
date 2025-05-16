@@ -84,7 +84,7 @@ pub(crate) fn value(input: &mut Input<'_>) -> ModalResult<Value> {
     .parse_next(input)
 }
 
-fn apply_raw(mut val: Value, span: std::ops::Range<usize>) -> Value {
+fn apply_raw(mut val: Value, span: core::ops::Range<usize>) -> Value {
     match val {
         Value::String(ref mut f) => {
             let raw = RawString::with_span(span);

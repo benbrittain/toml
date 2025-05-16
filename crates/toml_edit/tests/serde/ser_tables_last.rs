@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use core::collections::HashMap;
 
 use serde::Deserialize;
 use serde::Serialize;

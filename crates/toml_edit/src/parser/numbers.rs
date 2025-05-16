@@ -1,4 +1,4 @@
-use std::ops::RangeInclusive;
+use core::ops::RangeInclusive;
 
 use winnow::combinator::alt;
 use winnow::combinator::cut_err;
