@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use core::collections::BTreeMap;
 
 use serde::Deserialize;
 use serde::Deserializer;
@@ -148,7 +148,7 @@ fn array() {
 
 #[test]
 fn hashmap() {
-    use std::collections::HashSet;
+    use core::collections::HashSet;
 
     #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
     struct Foo {

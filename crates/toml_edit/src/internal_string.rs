@@ -1,5 +1,8 @@
-use std::borrow::Borrow;
-use std::str::FromStr;
+use alloc::borrow::Borrow;
+use alloc::boxed::Box;
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::str::FromStr;
 
 /// Opaque string storage internal to `toml_edit`
 #[derive(Default, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -23,14 +26,14 @@ impl InternalString {
     }
 }
 
-impl std::fmt::Debug for InternalString {
+impl core::fmt::Debug for InternalString {
     #[inline]
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+    fn fmt(&self, formatter: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         self.0.fmt(formatter)
     }
 }
 
-impl std::ops::Deref for InternalString {
+impl core::ops::Deref for InternalString {
     type Target = str;
 
     #[inline]
@@ -102,9 +105,9 @@ impl FromStr for InternalString {
     }
 }
 
-impl std::fmt::Display for InternalString {
+impl core::fmt::Display for InternalString {
     #[inline]
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         self.as_str().fmt(f)
     }
 }
@@ -137,7 +140,7 @@ struct StringVisitor;
 impl serde::de::Visitor<'_> for StringVisitor {
     type Value = InternalString;
 
-    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn expecting(&self, formatter: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         formatter.write_str("a string")
     }
 
@@ -159,7 +162,7 @@ impl serde::de::Visitor<'_> for StringVisitor {
     where
         E: serde::de::Error,
     {
-        match std::str::from_utf8(v) {
+        match core::str::from_utf8(v) {
             Ok(s) => Ok(InternalString::from(s)),
             Err(_) => Err(serde::de::Error::invalid_value(
                 serde::de::Unexpected::Bytes(v),

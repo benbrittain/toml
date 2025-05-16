@@ -2,6 +2,9 @@
 //!
 //! This module contains all the Serde support for serializing Rust structures into TOML.
 
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
+
 mod array;
 mod key;
 mod map;
@@ -123,7 +126,7 @@ pub enum Error {
 impl Error {
     pub(crate) fn custom<T>(msg: T) -> Self
     where
-        T: std::fmt::Display,
+        T: core::fmt::Display,
     {
         Error::Custom(msg.to_string())
     }
@@ -152,14 +155,14 @@ impl Error {
 impl serde::ser::Error for Error {
     fn custom<T>(msg: T) -> Self
     where
-        T: std::fmt::Display,
+        T: core::fmt::Display,
     {
         Self::custom(msg)
     }
 }
 
-impl std::fmt::Display for Error {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Error {
+    fn fmt(&self, formatter: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         match self {
             Self::UnsupportedType(Some(t)) => write!(formatter, "unsupported {t} type"),
             Self::UnsupportedType(None) => write!(formatter, "unsupported rust type"),
@@ -185,4 +188,4 @@ impl From<Error> for crate::TomlError {
     }
 }
 
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}

@@ -1,5 +1,9 @@
-use std::error::Error as StdError;
-use std::fmt::{Display, Formatter, Result};
+use alloc::borrow::ToOwned;
+use alloc::string::String;
+use alloc::string::ToString;
+use alloc::vec::Vec;
+use core::error::Error as StdError;
+use core::fmt::{Display, Formatter, Result};
 
 /// A TOML parse error
 #[derive(Debug, Clone, Eq, PartialEq, Hash)]
@@ -7,7 +11,7 @@ pub struct TomlError {
     message: String,
     raw: Option<String>,
     keys: Vec<String>,
-    span: Option<std::ops::Range<usize>>,
+    span: Option<core::ops::Range<usize>>,
 }
 
 impl TomlError {
@@ -36,7 +40,7 @@ impl TomlError {
     }
 
     #[cfg(any(feature = "serde", feature = "parse"))]
-    pub(crate) fn custom(message: String, span: Option<std::ops::Range<usize>>) -> Self {
+    pub(crate) fn custom(message: String, span: Option<core::ops::Range<usize>>) -> Self {
         Self {
             message,
             raw: None,
@@ -56,12 +60,12 @@ impl TomlError {
     }
 
     /// The start/end index into the original document where the error occurred
-    pub fn span(&self) -> Option<std::ops::Range<usize>> {
+    pub fn span(&self) -> Option<core::ops::Range<usize>> {
         self.span.clone()
     }
 
     #[cfg(feature = "serde")]
-    pub(crate) fn set_span(&mut self, span: Option<std::ops::Range<usize>>) {
+    pub(crate) fn set_span(&mut self, span: Option<core::ops::Range<usize>>) {
         self.span = span;
     }
 
@@ -161,7 +165,7 @@ fn translate_position(input: &[u8], index: usize) -> (usize, usize) {
     };
     let line = input[0..line_start].iter().filter(|b| **b == b'\n').count();
 
-    let column = std::str::from_utf8(&input[line_start..=index])
+    let column = core::str::from_utf8(&input[line_start..=index])
         .map(|s| s.chars().count() - 1)
         .unwrap_or_else(|_| index - line_start);
     let column = column + column_offset;

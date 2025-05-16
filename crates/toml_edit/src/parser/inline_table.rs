@@ -1,3 +1,5 @@
+use alloc::vec::Vec;
+
 use winnow::combinator::cut_err;
 use winnow::combinator::delimited;
 use winnow::combinator::separated;

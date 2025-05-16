@@ -1,4 +1,6 @@
-use std::ops;
+use core::ops;
+
+use alloc::string::String;
 
 use crate::key::Key;
 use crate::DocumentMut;

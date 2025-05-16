@@ -1,4 +1,5 @@
-use std::cell::RefCell;
+use alloc::vec::Vec;
+use core::cell::RefCell;
 
 use winnow::combinator::cut_err;
 use winnow::combinator::eof;
@@ -115,7 +116,7 @@ fn parse_keyval(input: &mut Input<'_>) -> ModalResult<(Vec<Key>, (Key, Item))> {
                 ),
             )),
         )
-            .try_map::<_, _, std::str::Utf8Error>(|(key, (_, v))| {
+            .try_map::<_, _, core::str::Utf8Error>(|(key, (_, v))| {
                 let mut path = key;
                 let key = path.pop().expect("grammar ensures at least 1");
 

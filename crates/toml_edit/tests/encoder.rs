@@ -98,7 +98,7 @@ fn from_decoded_scalar(
 }
 
 fn from_table(
-    decoded: &std::collections::HashMap<String, toml_test_harness::DecodedValue>,
+    decoded: &core::collections::HashMap<String, toml_test_harness::DecodedValue>,
 ) -> Result<toml_edit::InlineTable, toml_test_harness::Error> {
     decoded
         .iter()
