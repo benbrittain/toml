@@ -1,4 +1,7 @@
-use std::iter::FromIterator;
+use core::iter::FromIterator;
+
+use alloc::boxed::Box;
+use alloc::vec::Vec;
 
 use crate::key::Key;
 use crate::repr::Decor;
@@ -14,7 +17,7 @@ pub struct InlineTable {
     pub(crate) implicit: bool,
     // prefix before `{` and suffix after `}`
     decor: Decor,
-    pub(crate) span: Option<std::ops::Range<usize>>,
+    pub(crate) span: Option<core::ops::Range<usize>>,
     // whether this is a proxy for dotted keys
     dotted: bool,
     pub(crate) items: KeyValuePairs,
@@ -113,22 +116,22 @@ impl InlineTable {
     /// </div>
     pub fn sort_values_by<F>(&mut self, mut compare: F)
     where
-        F: FnMut(&Key, &Value, &Key, &Value) -> std::cmp::Ordering,
+        F: FnMut(&Key, &Value, &Key, &Value) -> core::cmp::Ordering,
     {
         self.sort_values_by_internal(&mut compare);
     }
 
     fn sort_values_by_internal<F>(&mut self, compare: &mut F)
     where
-        F: FnMut(&Key, &Value, &Key, &Value) -> std::cmp::Ordering,
+        F: FnMut(&Key, &Value, &Key, &Value) -> core::cmp::Ordering,
     {
         let modified_cmp =
-            |key1: &Key, val1: &Item, key2: &Key, val2: &Item| -> std::cmp::Ordering {
+            |key1: &Key, val1: &Item, key2: &Key, val2: &Item| -> core::cmp::Ordering {
                 match (val1.as_value(), val2.as_value()) {
                     (Some(v1), Some(v2)) => compare(key1, v1, key2, v2),
-                    (Some(_), None) => std::cmp::Ordering::Greater,
-                    (None, Some(_)) => std::cmp::Ordering::Less,
-                    (None, None) => std::cmp::Ordering::Equal,
+                    (Some(_), None) => core::cmp::Ordering::Greater,
+                    (None, Some(_)) => core::cmp::Ordering::Less,
+                    (None, None) => core::cmp::Ordering::Equal,
                 }
             };
 
@@ -236,7 +239,7 @@ impl InlineTable {
     /// The location within the original document
     ///
     /// This generally requires an [`ImDocument`][crate::ImDocument].
-    pub fn span(&self) -> Option<std::ops::Range<usize>> {
+    pub fn span(&self) -> Option<core::ops::Range<usize>> {
         self.span.clone()
     }
 
@@ -294,7 +297,7 @@ impl InlineTable {
         match self.items.entry(key.into().into()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 // Ensure it is a `Value` to simplify `InlineOccupiedEntry`'s code.
-                let scratch = std::mem::take(entry.get_mut());
+                let scratch = core::mem::take(entry.get_mut());
                 let scratch = Item::Value(
                     scratch
                         .into_value()
@@ -316,7 +319,7 @@ impl InlineTable {
         match self.items.entry(key.clone()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 // Ensure it is a `Value` to simplify `InlineOccupiedEntry`'s code.
-                let scratch = std::mem::take(entry.get_mut());
+                let scratch = core::mem::take(entry.get_mut());
                 let scratch = Item::Value(
                     scratch
                         .into_value()
@@ -398,7 +401,7 @@ impl InlineTable {
         match self.items.entry(key.clone()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 entry.key_mut().fmt();
-                let old = std::mem::replace(entry.get_mut(), value);
+                let old = core::mem::replace(entry.get_mut(), value);
                 old.into_value().ok()
             }
             indexmap::map::Entry::Vacant(entry) => {
@@ -415,7 +418,7 @@ impl InlineTable {
         match self.items.entry(key.clone()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 *entry.key_mut() = key.clone();
-                let old = std::mem::replace(entry.get_mut(), value);
+                let old = core::mem::replace(entry.get_mut(), value);
                 old.into_value().ok()
             }
             indexmap::map::Entry::Vacant(entry) => {
@@ -458,8 +461,8 @@ impl InlineTable {
 }
 
 #[cfg(feature = "display")]
-impl std::fmt::Display for InlineTable {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for InlineTable {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         crate::encode::encode_table(self, f, None, ("", ""))
     }
 }

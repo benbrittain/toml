@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use core::str::FromStr;
 
 use toml_datetime::Datetime;
 
@@ -143,7 +143,7 @@ impl Item {
     }
     /// In-place convert to a value
     pub fn make_value(&mut self) {
-        let other = std::mem::take(self);
+        let other = core::mem::take(self);
         let other = other.into_value().map(Item::Value).unwrap_or(Item::None);
         *self = other;
     }
@@ -184,7 +184,7 @@ impl Item {
     }
     // Starting private because the name is unclear
     pub(crate) fn make_item(&mut self) {
-        let other = std::mem::take(self);
+        let other = core::mem::take(self);
         let other = match other.into_table().map(Item::Table) {
             Ok(i) => i,
             Err(i) => i,
@@ -324,7 +324,7 @@ impl Item {
     /// The location within the original document
     ///
     /// This generally requires an [`ImDocument`][crate::ImDocument].
-    pub fn span(&self) -> Option<std::ops::Range<usize>> {
+    pub fn span(&self) -> Option<core::ops::Range<usize>> {
         match self {
             Item::None => None,
             Item::Value(v) => v.span(),
@@ -391,8 +391,8 @@ impl<V: Into<Value>> From<V> for Item {
 }
 
 #[cfg(feature = "display")]
-impl std::fmt::Display for Item {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Item {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         match &self {
             Item::None => Ok(()),
             Item::Value(v) => v.fmt(f),

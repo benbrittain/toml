@@ -75,6 +75,10 @@
 #![warn(missing_docs)]
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
+#![no_std]
+
+#[macro_use]
+extern crate alloc;
 
 mod array;
 mod array_of_tables;
@@ -132,7 +136,7 @@ pub(crate) mod private {
     pub trait Sealed {}
     impl Sealed for usize {}
     impl Sealed for str {}
-    impl Sealed for String {}
+    impl Sealed for alloc::string::String {}
     impl Sealed for i64 {}
     impl Sealed for f64 {}
     impl Sealed for bool {}

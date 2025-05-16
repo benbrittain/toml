@@ -1,11 +1,34 @@
-use std::iter::FromIterator;
+use core::iter::FromIterator;
 
-use indexmap::map::IndexMap;
+use alloc::boxed::Box;
+use alloc::vec::Vec;
+
+// use indexmap::map::IndexMap;
 
 use crate::key::Key;
 use crate::repr::Decor;
 use crate::value::DEFAULT_VALUE_DECOR;
 use crate::{InlineTable, InternalString, Item, KeyMut, Value};
+
+use core::hash::BuildHasherDefault;
+
+use core::hash::Hasher;
+
+#[derive(Default)]
+pub(crate) struct BadHasher(u64);
+
+impl Hasher for BadHasher {
+    fn finish(&self) -> u64 {
+        self.0
+    }
+    fn write(&mut self, bytes: &[u8]) {
+        for &byte in bytes {
+            self.0 += byte as u64;
+        }
+    }
+}
+
+pub(crate) type IndexMap<K, V> = indexmap::IndexMap<K, V, BuildHasherDefault<BadHasher>>;
 
 /// A TOML table, a top-level collection of key/[`Value`] pairs under a header and logical
 /// sub-tables
@@ -21,7 +44,7 @@ pub struct Table {
     //
     // `None` for user created tables (can be overridden with `set_position`)
     doc_position: Option<usize>,
-    pub(crate) span: Option<std::ops::Range<usize>>,
+    pub(crate) span: Option<core::ops::Range<usize>>,
     pub(crate) items: KeyValuePairs,
 }
 
@@ -142,17 +165,17 @@ impl Table {
     /// </div>
     pub fn sort_values_by<F>(&mut self, mut compare: F)
     where
-        F: FnMut(&Key, &Item, &Key, &Item) -> std::cmp::Ordering,
+        F: FnMut(&Key, &Item, &Key, &Item) -> core::cmp::Ordering,
     {
         self.sort_values_by_internal(&mut compare);
     }
 
     fn sort_values_by_internal<F>(&mut self, compare: &mut F)
     where
-        F: FnMut(&Key, &Item, &Key, &Item) -> std::cmp::Ordering,
+        F: FnMut(&Key, &Item, &Key, &Item) -> core::cmp::Ordering,
     {
         let modified_cmp =
-            |key1: &Key, val1: &Item, key2: &Key, val2: &Item| -> std::cmp::Ordering {
+            |key1: &Key, val1: &Item, key2: &Key, val2: &Item| -> core::cmp::Ordering {
                 compare(key1, val1, key2, val2)
             };
 
@@ -265,7 +288,7 @@ impl Table {
     /// The location within the original document
     ///
     /// This generally requires an [`ImDocument`][crate::ImDocument].
-    pub fn span(&self) -> Option<std::ops::Range<usize>> {
+    pub fn span(&self) -> Option<core::ops::Range<usize>> {
         self.span.clone()
     }
 
@@ -415,7 +438,7 @@ impl Table {
         match self.items.entry(key.clone()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 entry.key_mut().fmt();
-                let old = std::mem::replace(entry.get_mut(), item);
+                let old = core::mem::replace(entry.get_mut(), item);
                 Some(old)
             }
             indexmap::map::Entry::Vacant(entry) => {
@@ -431,7 +454,7 @@ impl Table {
         match self.items.entry(key.clone()) {
             indexmap::map::Entry::Occupied(mut entry) => {
                 *entry.key_mut() = key.clone();
-                let old = std::mem::replace(entry.get_mut(), item);
+                let old = core::mem::replace(entry.get_mut(), item);
                 Some(old)
             }
             indexmap::map::Entry::Vacant(entry) => {
@@ -466,8 +489,8 @@ impl Table {
 }
 
 #[cfg(feature = "display")]
-impl std::fmt::Display for Table {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Table {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> alloc::fmt::Result {
         let children = self.get_values();
         // print table body
         for (key_path, value) in children {

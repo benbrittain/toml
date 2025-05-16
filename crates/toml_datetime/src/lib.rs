@@ -11,6 +11,10 @@
 #![forbid(unsafe_code)]
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
+#![no_std]
+
+#[macro_use]
+extern crate alloc;
 
 mod datetime;
 

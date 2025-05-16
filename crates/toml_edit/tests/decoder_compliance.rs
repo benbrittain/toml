@@ -5,7 +5,7 @@ fn main() {
         .sort_by_file_name()
         .into_iter()
         .map(Result::unwrap)
-        .filter(|e| e.path().extension() == Some(std::ffi::OsStr::new("toml")))
+        .filter(|e| e.path().extension() == Some(core::ffi::OsStr::new("toml")))
         .map(|e| {
             let name = e
                 .path()
@@ -13,7 +13,7 @@ fn main() {
                 .unwrap()
                 .to_owned()
                 .into();
-            let fixture = std::fs::read(e.path()).unwrap().into();
+            let fixture = core::fs::read(e.path()).unwrap().into();
             toml_test_data::Invalid { name, fixture }
         })
         .collect::<Vec<_>>();

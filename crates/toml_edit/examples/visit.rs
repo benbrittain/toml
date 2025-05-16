@@ -1,6 +1,6 @@
 //! Example for how to use `VisitMut` to iterate over a table.
 
-use std::collections::BTreeSet;
+use core::collections::BTreeSet;
 use toml_edit::visit::{visit_table_like_kv, Visit};
 use toml_edit::visit_mut::{visit_table_like_kv_mut, visit_table_mut, VisitMut};
 use toml_edit::{Array, DocumentMut, InlineTable, Item, KeyMut, Table, Value};
@@ -122,7 +122,7 @@ impl VisitMut for NormalizeDependencyTablesVisitor {
             VisitState::Target | VisitState::TargetWithSpec | VisitState::Dependencies => {
                 // Top-level dependency row, or above: turn inline tables into regular ones.
                 if let Item::Value(Value::InlineTable(inline_table)) = node {
-                    let inline_table = std::mem::replace(inline_table, InlineTable::new());
+                    let inline_table = core::mem::replace(inline_table, InlineTable::new());
                     let table = inline_table.into_table();
                     key.fmt();
                     *node = Item::Table(table);
@@ -132,7 +132,7 @@ impl VisitMut for NormalizeDependencyTablesVisitor {
                 // Individual dependency: turn regular tables into inline ones.
                 if let Item::Table(table) = node {
                     // Turn the table into an inline table.
-                    let table = std::mem::replace(table, Table::new());
+                    let table = core::mem::replace(table, Table::new());
                     let inline_table = table.into_inline_table();
                     key.fmt();
                     *node = Item::Value(Value::InlineTable(inline_table));

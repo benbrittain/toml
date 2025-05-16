@@ -1,4 +1,5 @@
 use super::Error;
+use alloc::vec::Vec;
 
 #[doc(hidden)]
 pub struct SerializeValueArray {
@@ -92,7 +93,7 @@ impl serde::ser::SerializeTupleVariant for SerializeTupleVariant {
 
     fn end(self) -> Result<Self::Ok, Self::Error> {
         let inner = serde::ser::SerializeSeq::end(self.inner)?;
-        let mut items = crate::table::KeyValuePairs::new();
+        let mut items = crate::table::KeyValuePairs::default();
         let value = crate::Item::Value(inner);
         items.insert(crate::Key::new(self.variant), value);
         Ok(crate::Value::InlineTable(crate::InlineTable::with_pairs(

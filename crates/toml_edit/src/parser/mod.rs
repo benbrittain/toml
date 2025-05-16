@@ -1,6 +1,9 @@
 #![allow(clippy::type_complexity)]
 
-use std::cell::RefCell;
+use alloc::string::ToString;
+use alloc::vec::Vec;
+use core::cell::RefCell;
+
 pub(crate) mod array;
 pub(crate) mod datetime;
 pub(crate) mod document;

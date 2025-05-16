@@ -1,8 +1,8 @@
 #![allow(renamed_and_removed_lints)]
 #![allow(clippy::blacklisted_name)]
 
-use std::collections::HashMap;
-use std::fmt::Debug;
+use core::collections::HashMap;
+use core::fmt::Debug;
 
 use serde::Deserialize;
 use snapbox::assert_data_eq;

@@ -1,6 +1,7 @@
-use std::error;
-use std::fmt;
-use std::str::{self, FromStr};
+use alloc::fmt;
+use alloc::str::{self, FromStr};
+use alloc::string::ToString;
+use core::error;
 
 #[cfg(feature = "serde")]
 use serde::{de, ser};

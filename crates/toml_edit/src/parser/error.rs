@@ -1,5 +1,8 @@
-use std::error::Error as StdError;
-use std::fmt::{Display, Formatter, Result};
+use alloc::borrow::ToOwned;
+use alloc::string::String;
+use alloc::vec::Vec;
+use core::error::Error as StdError;
+use core::fmt::{Display, Formatter, Result};
 
 use crate::Key;
 
